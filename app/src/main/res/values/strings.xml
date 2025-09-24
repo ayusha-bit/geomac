@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name" translatable="false">Geomac</string>
+    <string name="apple" translatable="false">Apple</string>
+    <string name="google" translatable="false">Google</string>
+    <string name="microsoft" translatable="false">Microsoft</string>
+    <string name="mylnikov" translatable="false">Mylnikov</string>
+    <string name="yandex">Yandex</string>
+    <string name="not_found">Not found</string>
+    <string name="coordinates">%1$s coordinates</string>
+    <string name="coordinates_copied">%1$s coordinates copied to clipboard</string>
+    <string name="mac">MAC address</string>
+    <string name="mac_search">Search MAC address</string>
+    <string name="mac_copied">MAC address copied to clipboard</string>
+    <string name="mac_deleted">%1$s deleted</string>
+    <string name="undo">Undo</string>
+    <string name="empty">There is nothing here yet</string>
+    <string name="error">Unknown error</string>
+    <string name="show_stack_trace">Show stack trace</string>
+    <string name="stack_trace">Stack trace</string>
+</resources>

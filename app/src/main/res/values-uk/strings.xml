@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="yandex">Яндекс</string>
+    <string name="not_found">Не знайдено</string>
+    <string name="coordinates">Координати %1$s</string>
+    <string name="coordinates_copied">Координати %1$s скопійовано в буфер обміну</string>
+    <string name="mac">MAC-адрес</string>
+    <string name="mac_search">Пошук MAC-адреси</string>
+    <string name="mac_copied">MAC-адресу скопійовано в буфер обміну</string>
+    <string name="mac_deleted">Видалено %1$s</string>
+    <string name="undo">Скасувати</string>
+    <string name="empty">Тут ще нічого немає</string>
+    <string name="error">Невідома помилка</string>
+    <string name="show_stack_trace">Показати трасування стека</string>
+    <string name="stack_trace">Трасування стека</string>
+</resources>
