@@ -22,6 +22,11 @@
          <td><img width="100%" src="https://github.com/user-attachments/assets/8f368c01-f2cb-4a9c-a7f0-9711846e671d" /></td>
          <td><img width="100%" src="https://github.com/user-attachments/assets/bbeb4aad-d95c-48c9-a92c-b0b52047e2aa" /></td>
       </tr>
+      <tr>
+         <td colspan="2">
+            <video controls src="https://github.com/user-attachments/assets/6115f97f-1534-48df-b3f1-c064427d1f8c"></video>
+         </td>
+      </tr>
    </tbody>
 </table>
 <h2>License</h2>
