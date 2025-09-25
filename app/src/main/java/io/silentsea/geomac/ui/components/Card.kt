@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -80,6 +82,12 @@ fun LazyItemScope.Card(
         targetValue = if (anchoredDraggableState.targetValue == CardSwipeState.Settled) 12.dp else 0.dp,
     )
 
+    LaunchedEffect(isSearching) {
+        if (isSearching) {
+            anchoredDraggableState.animateTo(CardSwipeState.Settled)
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -118,8 +126,9 @@ fun LazyItemScope.Card(
                     )
                 }
                 .anchoredDraggable(
-                    anchoredDraggableState,
-                    Orientation.Horizontal
+                    state = anchoredDraggableState,
+                    orientation = Orientation.Horizontal,
+                    enabled = !isSearching
                 ),
             shape = RoundedCornerShape(
                 topStart = 12.dp,
