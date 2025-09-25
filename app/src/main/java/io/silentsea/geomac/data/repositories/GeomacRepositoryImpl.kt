@@ -15,8 +15,6 @@ import io.silentsea.geomac.data.db.GeomacDao
 import io.silentsea.geomac.data.db.entities.GeomacCoordinates
 import io.silentsea.geomac.data.db.entities.GeomacItem
 import io.silentsea.geomac.data.db.entities.GeomacItemWithCoordinates
-import io.silentsea.geomac.utils.indexOf
-import io.silentsea.geomac.utils.macString
 import io.silentsea.geomac.domain.entites.AppleRequest
 import io.silentsea.geomac.domain.entites.AppleResponse
 import io.silentsea.geomac.domain.entites.GoogleRequest
@@ -27,6 +25,8 @@ import io.silentsea.geomac.domain.entites.MylnikovResponse
 import io.silentsea.geomac.domain.entites.Services
 import io.silentsea.geomac.domain.entites.YandexResponse
 import io.silentsea.geomac.domain.repositories.GeomacRepository
+import io.silentsea.geomac.utils.indexOf
+import io.silentsea.geomac.utils.macString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -189,7 +189,7 @@ class GeomacRepositoryImpl : GeomacRepository, KoinComponent {
         )
 
         val response = protobuf.decodeFromByteArray<AppleResponse>(
-            data.sliceArray(index + 8 until data.size)
+            data.copyOfRange(index + 8, data.size)
         )
 
         val (latitude, longitude) = checkNotNull(
@@ -286,7 +286,7 @@ class GeomacRepositoryImpl : GeomacRepository, KoinComponent {
         )
 
         val gunzipped =
-            ByteArrayInputStream(data.sliceArray(index until data.size)).use { byteArrayInputStream ->
+            ByteArrayInputStream(data.copyOfRange(index, data.size)).use { byteArrayInputStream ->
                 GZIPInputStream(byteArrayInputStream).use { it.readBytes() }
             }
 
