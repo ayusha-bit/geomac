@@ -83,6 +83,8 @@ fun Geomac() {
 
     var error by remember { mutableStateOf<Throwable?>(null) }
 
+    var swiped by remember { mutableStateOf<Long?>(null) }
+
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -181,6 +183,7 @@ fun Geomac() {
                                             Card(
                                                 item = item,
                                                 isSearching = searching.contains(item.mac),
+                                                isSwiped = swiped == item.mac,
                                                 onDelete = {
                                                     coroutineScope.launch {
                                                         viewModel.delete(item.mac)
@@ -204,6 +207,9 @@ fun Geomac() {
                                                     coroutineScope.launch {
                                                         viewModel.search(item.mac)
                                                     }
+                                                },
+                                                onSwipe = {
+                                                    swiped = item.mac
                                                 }
                                             )
                                         }

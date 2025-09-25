@@ -59,8 +59,10 @@ import kotlin.math.roundToInt
 fun LazyItemScope.Card(
     item: GeomacItemWithCoordinates,
     isSearching: Boolean,
+    isSwiped: Boolean,
     onDelete: () -> Unit,
     onUpdate: () -> Unit,
+    onSwipe: () -> Unit
 ) {
     val context = LocalContext.current
     val clipboard = LocalClipboard.current
@@ -82,9 +84,15 @@ fun LazyItemScope.Card(
         targetValue = if (anchoredDraggableState.targetValue == CardSwipeState.Settled) 12.dp else 0.dp,
     )
 
-    LaunchedEffect(isSearching) {
-        if (isSearching) {
+    LaunchedEffect(isSearching, isSwiped) {
+        if (isSearching || !isSwiped) {
             anchoredDraggableState.animateTo(CardSwipeState.Settled)
+        }
+    }
+
+    LaunchedEffect(anchoredDraggableState.targetValue) {
+        if (anchoredDraggableState.targetValue == CardSwipeState.EndToStart) {
+            onSwipe()
         }
     }
 
