@@ -20,7 +20,8 @@ data class MicrosoftRequest(
     val beaconFingerprint: BeaconFingerprint? = null
 ) {
     @Serializable
-    data class RequestHeader @OptIn(ExperimentalTime::class) constructor(
+    data class RequestHeader(
+        @OptIn(ExperimentalTime::class)
         @XmlSerialName("Timestamp")
         @XmlElement
         val timestamp: LocalDateTime = Clock.System.now()
