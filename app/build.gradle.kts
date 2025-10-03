@@ -21,6 +21,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            isDefault = true
+
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-DEBUG"
+            resValue("string", "app_name", "Geomac D")
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
