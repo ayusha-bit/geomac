@@ -104,13 +104,32 @@ fun Geomac() {
 
     val wifiManager = context.getSystemService(WifiManager::class.java)
     val isPermissionRevoked by viewModel.isPermissionRevoked.collectAsState()
+    var isWifiScanSheetOpened by remember { mutableStateOf(false) }
     val wifiScanPermission = rememberPermissionState(
         permission = Manifest.permission.ACCESS_FINE_LOCATION,
         onPermissionResult = { isGranted ->
+            if (isGranted) {
+                @Suppress("DEPRECATION")
+                if (wifiManager.isWifiEnabled || (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && wifiManager.isScanAlwaysAvailable)) {
+                    isWifiScanSheetOpened = true
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    context.showToast(
+                        text = context.getString(R.string.turn_on_wifi)
+                    )
+
+                    context.startActivity(
+                        Intent(Settings.Panel.ACTION_WIFI)
+                    )
+                } else {
+                    @Suppress("DEPRECATION")
+                    wifiManager.isWifiEnabled = true
+                    isWifiScanSheetOpened = true
+                }
+            }
+
             viewModel.setPermissionRevoked(!isGranted)
         }
     )
-    var isWifiScanSheetOpened by remember { mutableStateOf(false) }
 
     Scaffold(
         snackbarHost = {
