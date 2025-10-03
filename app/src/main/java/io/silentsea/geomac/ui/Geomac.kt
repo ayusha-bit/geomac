@@ -1,5 +1,11 @@
 package io.silentsea.geomac.ui
 
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
+import android.net.wifi.WifiManager
+import android.os.Build
+import android.provider.Settings
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
@@ -8,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,8 +22,11 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -40,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,15 +58,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import io.silentsea.geomac.R
 import io.silentsea.geomac.ui.components.Card
 import io.silentsea.geomac.ui.components.ErrorSheet
 import io.silentsea.geomac.ui.components.InputTextField
+import io.silentsea.geomac.ui.components.WifiScanSheet
 import io.silentsea.geomac.utils.macString
+import io.silentsea.geomac.utils.showToast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun Geomac() {
     val context = LocalContext.current
@@ -85,6 +102,16 @@ fun Geomac() {
 
     var swiped by remember { mutableStateOf<Long?>(null) }
 
+    val wifiManager = context.getSystemService(WifiManager::class.java)
+    val isPermissionRevoked by viewModel.isPermissionRevoked.collectAsState()
+    val wifiScanPermission = rememberPermissionState(
+        permission = Manifest.permission.ACCESS_FINE_LOCATION,
+        onPermissionResult = { isGranted ->
+            viewModel.setPermissionRevoked(!isGranted)
+        }
+    )
+    var isWifiScanSheetOpened by remember { mutableStateOf(false) }
+
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -107,17 +134,72 @@ fun Geomac() {
                 },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            InputTextField(
-                textFieldState = textFieldState,
-                onSearch = {
-                    coroutineScope.launch {
-                        viewModel.search()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                InputTextField(
+                    textFieldState = textFieldState,
+                    onSearch = {
+                        coroutineScope.launch {
+                            viewModel.search()
+                        }
+                    },
+                    onFocusChanged = {
+                        isFocused = it
                     }
-                },
-                onFocusChanged = {
-                    isFocused = it
+                )
+
+                IconButton(
+                    onClick = {
+                        if (wifiScanPermission.status.isGranted) {
+                            @Suppress("DEPRECATION")
+                            if (wifiManager.isWifiEnabled || (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && wifiManager.isScanAlwaysAvailable)) {
+                                isWifiScanSheetOpened = true
+                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                context.showToast(
+                                    text = context.getString(R.string.turn_on_wifi)
+                                )
+
+                                context.startActivity(
+                                    Intent(Settings.Panel.ACTION_WIFI)
+                                )
+                            } else {
+                                @Suppress("DEPRECATION")
+                                wifiManager.isWifiEnabled = true
+                                isWifiScanSheetOpened = true
+                            }
+
+                            if (isPermissionRevoked) {
+                                viewModel.setPermissionRevoked(false)
+                            }
+                        } else {
+                            if (!wifiScanPermission.status.shouldShowRationale && isPermissionRevoked) {
+                                context.showToast(
+                                    text = context.getString(R.string.grant_permission_manually)
+                                )
+
+                                context.startActivity(
+                                    Intent(
+                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.fromParts("package", context.packageName, null),
+                                    )
+                                )
+                            } else {
+                                wifiScanPermission.launchPermissionRequest()
+                            }
+                        }
+                    }
+                ) {
+                    Icon(
+                        painterResource(R.drawable.wifi_find_24px),
+                        contentDescription = null
+                    )
                 }
-            )
+            }
 
             HorizontalDivider()
 
@@ -291,6 +373,21 @@ fun Geomac() {
             error = it,
             onDismissRequest = {
                 error = null
+            }
+        )
+    }
+
+    if (isWifiScanSheetOpened) {
+        WifiScanSheet(
+            onSearch = { mac ->
+                textFieldState.setTextAndPlaceCursorAtEnd(mac.macString(""))
+
+                coroutineScope.launch {
+                    viewModel.search(mac)
+                }
+            },
+            onDismissRequest = {
+                isWifiScanSheetOpened = false
             }
         )
     }

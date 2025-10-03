@@ -13,4 +13,7 @@
     <string name="error">Неизвестная ошибка</string>
     <string name="show_stack_trace">Показать трассировку стека</string>
     <string name="stack_trace">Трассировка стека</string>
+    <string name="wifi_scan">Сканирование Wi-Fi</string>
+    <string name="grant_permission_manually">Предоставьте разрешение вручную</string>
+    <string name="turn_on_wifi">Включите Wi-Fi</string>
 </resources>

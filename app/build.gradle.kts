@@ -73,6 +73,9 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
     implementation(libs.room.runtime)
+    implementation(libs.accompanist.permissions)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.klibs.kstorage)
 
     ksp(libs.room.compiler)
 }

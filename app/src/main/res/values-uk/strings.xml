@@ -13,4 +13,7 @@
     <string name="error">Невідома помилка</string>
     <string name="show_stack_trace">Показати трасування стека</string>
     <string name="stack_trace">Трасування стека</string>
+    <string name="wifi_scan">Сканування Wi-Fi</string>
+    <string name="grant_permission_manually">Надайте дозвіл вручну</string>
+    <string name="turn_on_wifi">Увімкніть Wi-Fi</string>
 </resources>

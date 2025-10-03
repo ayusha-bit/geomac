@@ -17,4 +17,7 @@
     <string name="error">Unknown error</string>
     <string name="show_stack_trace">Show stack trace</string>
     <string name="stack_trace">Stack trace</string>
+    <string name="wifi_scan">Wi-Fi scanning</string>
+    <string name="grant_permission_manually">Grant permission manually</string>
+    <string name="turn_on_wifi">Turn on Wi-Fi</string>
 </resources>
