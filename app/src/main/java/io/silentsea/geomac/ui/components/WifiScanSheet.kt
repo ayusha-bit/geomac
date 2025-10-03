@@ -98,11 +98,11 @@ fun WifiScanSheet(
                                                     scanResults[index].wifiSsid?.toString()
                                                         ?.trim('"')
                                                         ?.takeIf { it.isNotEmpty() }
-                                                        ?: "Unknown SSID"
+                                                        ?: stringResource(R.string.unknown_ssid)
                                                 } else {
                                                     @Suppress("DEPRECATION")
                                                     scanResults[index].SSID.takeIf { it.isNotEmpty() }
-                                                        ?: "Unknown SSID"
+                                                        ?: stringResource(R.string.unknown_ssid)
                                                 }
                                             )
                                         },

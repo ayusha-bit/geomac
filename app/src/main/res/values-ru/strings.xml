@@ -16,4 +16,5 @@
     <string name="wifi_scan">Сканирование Wi-Fi</string>
     <string name="grant_permission_manually">Предоставьте разрешение вручную</string>
     <string name="turn_on_wifi">Включите Wi-Fi</string>
+    <string name="unknown_ssid">Неизвестный SSID</string>
 </resources>

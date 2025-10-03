@@ -20,4 +20,5 @@
     <string name="wifi_scan">Wi-Fi scanning</string>
     <string name="grant_permission_manually">Grant permission manually</string>
     <string name="turn_on_wifi">Turn on Wi-Fi</string>
+    <string name="unknown_ssid">Unknown SSID</string>
 </resources>
