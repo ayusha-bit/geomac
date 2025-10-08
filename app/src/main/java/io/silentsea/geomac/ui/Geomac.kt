@@ -2,7 +2,6 @@ package io.silentsea.geomac.ui
 
 import android.Manifest
 import android.content.Intent
-import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.provider.Settings
@@ -58,10 +57,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
+import io.silentsea.geomac.utils.AppPermission
+import io.silentsea.geomac.utils.rememberAppPermissionState
 import io.silentsea.geomac.R
 import io.silentsea.geomac.ui.components.Card
 import io.silentsea.geomac.ui.components.ErrorSheet
@@ -72,7 +69,7 @@ import io.silentsea.geomac.utils.showToast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun Geomac() {
     val context = LocalContext.current
@@ -103,32 +100,15 @@ fun Geomac() {
     var swiped by remember { mutableStateOf<Long?>(null) }
 
     val wifiManager = context.getSystemService(WifiManager::class.java)
-    val isPermissionRevoked by viewModel.isPermissionRevoked.collectAsState()
     var isWifiScanSheetOpened by remember { mutableStateOf(false) }
-    val wifiScanPermission = rememberPermissionState(
-        permission = Manifest.permission.ACCESS_FINE_LOCATION,
-        onPermissionResult = { isGranted ->
-            if (isGranted) {
-                @Suppress("DEPRECATION")
-                if (wifiManager.isWifiEnabled || (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && wifiManager.isScanAlwaysAvailable)) {
-                    isWifiScanSheetOpened = true
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    context.showToast(
-                        text = context.getString(R.string.turn_on_wifi)
-                    )
-
-                    context.startActivity(
-                        Intent(Settings.Panel.ACTION_WIFI)
-                    )
-                } else {
-                    @Suppress("DEPRECATION")
-                    wifiManager.isWifiEnabled = true
-                    isWifiScanSheetOpened = true
-                }
-            }
-
-            viewModel.setPermissionRevoked(!isGranted)
-        }
+    val wifiScanPermissions = rememberAppPermissionState(
+        permissions = listOf(
+            AppPermission(
+                permission = Manifest.permission.ACCESS_FINE_LOCATION,
+                description = stringResource(R.string.permission_description),
+                isRequired = true
+            )
+        )
     )
 
     Scaffold(
@@ -174,7 +154,7 @@ fun Geomac() {
 
                 IconButton(
                     onClick = {
-                        if (wifiScanPermission.status.isGranted) {
+                        if (wifiScanPermissions.allRequiredGranted()) {
                             @Suppress("DEPRECATION")
                             if (wifiManager.isWifiEnabled || (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && wifiManager.isScanAlwaysAvailable)) {
                                 isWifiScanSheetOpened = true
@@ -191,25 +171,8 @@ fun Geomac() {
                                 wifiManager.isWifiEnabled = true
                                 isWifiScanSheetOpened = true
                             }
-
-                            if (isPermissionRevoked) {
-                                viewModel.setPermissionRevoked(false)
-                            }
                         } else {
-                            if (!wifiScanPermission.status.shouldShowRationale && isPermissionRevoked) {
-                                context.showToast(
-                                    text = context.getString(R.string.grant_permission_manually)
-                                )
-
-                                context.startActivity(
-                                    Intent(
-                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                        Uri.fromParts("package", context.packageName, null),
-                                    )
-                                )
-                            } else {
-                                wifiScanPermission.launchPermissionRequest()
-                            }
+                            wifiScanPermissions.requestPermission()
                         }
                     }
                 ) {

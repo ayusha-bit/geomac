@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import io.silentsea.geomac.core.Prefs
 import io.silentsea.geomac.data.db.entities.GeomacItemWithCoordinates
 import io.silentsea.geomac.domain.usecases.DeleteUseCase
 import io.silentsea.geomac.domain.usecases.GetAllInRangesUseCase
@@ -13,14 +12,11 @@ import io.silentsea.geomac.domain.usecases.SearchUseCase
 import io.silentsea.geomac.domain.usecases.UndoUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import ru.astrainteractive.klibs.kstorage.util.update
 
 class GeomacViewModel : ViewModel(), KoinComponent {
     private val searchUseCase: SearchUseCase by inject()
@@ -28,7 +24,6 @@ class GeomacViewModel : ViewModel(), KoinComponent {
     private val undoUseCase: UndoUseCase by inject()
     private val getAllInRangesUseCase: GetAllInRangesUseCase by inject()
 
-    private val prefs: Prefs by inject()
 
     private val _input = MutableStateFlow("")
 
@@ -80,13 +75,4 @@ class GeomacViewModel : ViewModel(), KoinComponent {
     suspend fun delete(vararg macs: Long) = deleteUseCase(*macs)
 
     suspend fun undo(vararg items: GeomacItemWithCoordinates) = undoUseCase(*items)
-
-    val isPermissionRevoked: StateFlow<Boolean> =
-        prefs.isPermissionRevoked.stateFlow(viewModelScope)
-
-    fun setPermissionRevoked(value: Boolean) {
-        viewModelScope.launch {
-            prefs.isPermissionRevoked.update { value }
-        }
-    }
 }

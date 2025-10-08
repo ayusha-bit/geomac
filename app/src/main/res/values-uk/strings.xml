@@ -17,4 +17,7 @@
     <string name="grant_permission_manually">Надайте дозвіл вручну</string>
     <string name="turn_on_wifi">Увімкніть Wi-Fi</string>
     <string name="unknown_ssid">Невідомий SSID</string>
+    <string name="permission_description">Для сканування Wi-Fi потрібен дозвіл на доступ до місцезнаходження. Надайте цей дозвіл.</string>
+    <string name="ok">ОК</string>
+    <string name="permission">Дозвіл</string>
 </resources>

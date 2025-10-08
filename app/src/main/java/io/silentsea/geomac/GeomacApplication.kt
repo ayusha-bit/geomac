@@ -1,7 +1,6 @@
 package io.silentsea.geomac
 
 import android.app.Application
-import io.silentsea.geomac.di.appModule
 import io.silentsea.geomac.di.databaseModule
 import io.silentsea.geomac.di.networkModule
 import io.silentsea.geomac.di.repositoriesModule
@@ -16,7 +15,6 @@ class GeomacApplication : Application() {
         startKoin {
             androidContext(applicationContext)
             modules(
-                appModule,
                 databaseModule,
                 networkModule,
                 repositoriesModule,

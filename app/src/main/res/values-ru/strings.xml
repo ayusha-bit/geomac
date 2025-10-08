@@ -17,4 +17,7 @@
     <string name="grant_permission_manually">Предоставьте разрешение вручную</string>
     <string name="turn_on_wifi">Включите Wi-Fi</string>
     <string name="unknown_ssid">Неизвестный SSID</string>
+    <string name="permission_description">Для сканирования Wi-Fi требуется разрешение на определение местоположения. Предоставьте это разрешение.</string>
+    <string name="ok">ОК</string>
+    <string name="permission">Разрешение</string>
 </resources>
