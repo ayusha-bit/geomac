@@ -3,7 +3,6 @@ package io.silentsea.geomac.utils
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
-import kotlin.collections.contains
 
 fun checkPermissionAddedInManifest(permission: AppPermission, context: Context): Boolean {
     return try {

@@ -57,14 +57,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import io.silentsea.geomac.utils.AppPermission
-import io.silentsea.geomac.utils.rememberAppPermissionState
 import io.silentsea.geomac.R
 import io.silentsea.geomac.ui.components.Card
 import io.silentsea.geomac.ui.components.ErrorSheet
 import io.silentsea.geomac.ui.components.InputTextField
 import io.silentsea.geomac.ui.components.WifiScanSheet
+import io.silentsea.geomac.utils.AppPermission
 import io.silentsea.geomac.utils.macString
+import io.silentsea.geomac.utils.rememberAppPermissionState
 import io.silentsea.geomac.utils.showToast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
