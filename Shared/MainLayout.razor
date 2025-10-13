@@ -1,0 +1,12 @@
+﻿@inherits LayoutComponentBase
+@using P._Expense_Tracker.Pages
+
+<PageTitle>Personal Expense Tracker</PageTitle>
+
+<main>
+    <div class="container">
+        <Sidebar></Sidebar>
+        @Body
+        <Syncfusion.Blazor.Popups.SfDialogProvider />
+    </div>
+</main>
